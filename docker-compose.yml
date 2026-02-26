@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  anilist_db:
+    image: postgres:17
+    env_file:
+      - .env
+    user: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    ports:
+      - 127.0.0.1:5432:5432
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - .env
+    depends_on:
+      anilist_db:
+        condition: service_healthy
+    volumes:
+        - ./backend:/app/backend/
+    ports:
+      - 127.0.0.1:8000:8000
+    stdin_open: true
+    tty: true
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    ports:
+      - 127.0.0.1:5173:5173
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+  
+volumes:
+  postgres_data:
