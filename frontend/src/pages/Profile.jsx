@@ -1,45 +1,28 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "./AuthProvider";
-import axios from 'axios';
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "../context/AuthContext";
+import { watchlistQueryOptions } from "../api/animeService";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function Profile() {
-    const { username, email } = useAuth();
-    const [watchlist, setWatchlist] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const { username, email } = useAuth();
+  const { data: watchlist, isLoading } = useQuery(watchlistQueryOptions);
 
-    useEffect(() => {
-        const fetchWatchlist = async () => {
-            try {
-                const token = localStorage.getItem('accessToken');
-                const config = { headers: { 'Authorization': `Bearer ${token}` } };
-                const response = await axios.get('http://127.0.0.1:8000/watchlist/', config);
-                setWatchlist(response.data);
-            } catch (error) {
-                console.error('Failed to fetch watchlist:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+  if (isLoading) return <LoadingSpinner />;
 
-        fetchWatchlist();
-    }, []);
-
-    if (loading) return <p>Loading watchlist...</p>;
-
-    return (
-        <div>
-            <h2>Username: {username}</h2>
-            <h2>Email: {email}</h2>
-            <h3>My Watchlist</h3>
-            <ul>
-                {watchlist.length > 0 ? (
-                    watchlist.map(animeId => (
-                        <li key={animeId}>Anime ID: {animeId}</li>
-                    ))
-                ) : (
-                    <p>Your watchlist is empty.</p>
-                )}
-            </ul>
-        </div>
-    )
+  return (
+    <div>
+      <h2>Username: {username}</h2>
+      <h2>Email: {email}</h2>
+      <h3>My Watchlist</h3>
+      {watchlist && watchlist.length > 0 ? (
+        <ul>
+          {watchlist.map(animeId => (
+            <li key={animeId}>Anime ID: {animeId}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>Your watchlist is empty.</p>
+      )}
+    </div>
+  )
 }

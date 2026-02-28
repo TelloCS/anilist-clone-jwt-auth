@@ -23,6 +23,13 @@ const AuthProvider = ({ children }) => {
     },
   });
 
+  const registerMutation = useMutation({
+    mutationFn: authService.register,
+    onSuccess: () => {
+      // Registration usually doesn't log you in immediately with JWT, so we don't set user data here
+    },
+  });
+
   const logoutMutation = useMutation({
     mutationFn: authService.logout,
     onSuccess: () => {
@@ -33,6 +40,10 @@ const AuthProvider = ({ children }) => {
 
   const login = async (formData) => {
     return await loginMutation.mutateAsync(formData);
+  };
+
+  const register = async (formData) => {
+    return await registerMutation.mutateAsync(formData);
   };
 
   const handleLogout = async () => {
@@ -50,8 +61,11 @@ const AuthProvider = ({ children }) => {
       username,
       email,
       login,
+      register,
       handleLogout,
-      loading: isLoading
+      loading: isLoading,
+      isLoggingIn: loginMutation.isPending,
+      isRegistering: registerMutation.isPending
     }}>
       {children}
     </AuthContext.Provider>

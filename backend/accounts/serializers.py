@@ -1,45 +1,46 @@
-from .models import CustomUser
 from rest_framework import serializers
-from django.contrib.auth import authenticate
+from django.contrib.auth.password_validation import validate_password
+from .models import CustomUser
 
-class CustomUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ("id", "username", "email")
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password1 = serializers.CharField(write_only=True)
-    password2 = serializers.CharField(write_only=True)
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={'input_type': 'password'},
+        validators=[validate_password]
+    )
+
+    password_confirm = serializers.CharField(
+        write_only=True, 
+        required=True, 
+        style={'input_type': 'password'}
+    )
 
     class Meta:
         model = CustomUser
-        fields = ("id", "username", "email", "password1", "password2")
-        extra_kwargs = {"password": {"write_only": True}}
+        fields = ('username', 'email', 'password', 'password_confirm')
 
     def validate(self, attrs):
-        if attrs['password1'] != attrs['password2']:
-            raise serializers.ValidationError("Passwords do not match!")
+        if attrs['password'] != attrs['password_confirm']:
+            raise serializers.ValidationError(
+                {"password_confirm": "Password fields didn't match."}
+            )
         
-        password = attrs.get('password1', "")
-        if len(password) < 8:
-            raise serializers.ValidationError("Password must be at least 8 characters!")
-
         return attrs
-    
+
     def create(self, validated_data):
-        password = validated_data.pop("password1")
-        validated_data.pop("password2")
+        validated_data.pop('password_confirm', None)
 
-        return CustomUser.objects.create_user(password=password, **validated_data)
-    
-class UserLoginSerializer(serializers.Serializer):
-    email = serializers.CharField()
-    password = serializers.CharField(write_only=True)
+        user = CustomUser.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data.get('email', ''),
+            password=validated_data['password']
+        )
+        return user
 
-    def validate(self, data):
-        user = authenticate(**data)
 
-        if user and user.is_active:
-            return user
-        raise serializers.ValidationError("Incorrect Credentials!")
-        
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'email')
