@@ -43,7 +43,7 @@ export default function Register() {
       console.log("Success!", data)
       setSuccessMessage("Registration Successful! Redirecting to login...");
       setTimeout(() => {
-        navigate("/login");
+        navigate("/login/");
       }, 2000);
     }
     catch (error) {
