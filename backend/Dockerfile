@@ -23,6 +23,8 @@ EXPOSE 8000
 #######################################################################
 FROM python AS dev
 
+ENV DJANGO_SETTINGS_MODULE=backend.settings.local
+
 COPY --chown=anilist:anilist . .
 RUN chmod +x entrypoint.sh
 

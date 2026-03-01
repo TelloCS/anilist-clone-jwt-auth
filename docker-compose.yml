@@ -34,6 +34,8 @@ services:
         condition: service_healthy
     volumes:
         - ./backend:/app/backend/
+    environment:
+      - DJANGO_SETTINGS_MODULE=backend.settings.local
     ports:
       - 127.0.0.1:8000:8000
     stdin_open: true

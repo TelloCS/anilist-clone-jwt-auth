@@ -10,17 +10,20 @@ class WatchListView(APIView):
 
     def get(self, request: Request):
         watchlist_items = WatchList.objects.filter(user=request.user)
-        anime_ids = [item.anime_id for item in watchlist_items]
-
-        return Response(anime_ids)
+        serializer = WatchListSerializer(watchlist_items, many=True)
+        return Response(serializer.data)
     
     def post(self, request: Request):
         anime_id = request.data.get('anime_id')
+        title = request.data.get('title')
+        image_url = request.data.get('image_url')
+        slug = request.data.get('slug')
+
         if not anime_id:
             return Response({'error': 'anime_id is required.'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            WatchList.objects.create(user=request.user, anime_id=anime_id)
+            WatchList.objects.create(user=request.user, anime_id=anime_id, title=title, image_url=image_url, slug=slug)
             return Response({'success': 'Anime added to watchlist.'}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
