@@ -1,75 +1,44 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { useAuth } from './AuthProvider'
+import { useParams, Navigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { animeDetailsQueryOptions } from "../api/animeService";
+import WatchlistButton from '../components/WatchlistButton';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const AnimeDetailPage = () => {
-  const { id, name } = useParams(); // Get the 'id' from the URL
-  const [anime, setAnime] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { isLoggedIn } = useAuth();
-  const [isWatchlisted, setIsWatchlisted] = useState(false);
+  const { id, name } = useParams();
+  const { data: anime, isLoading, error } = useQuery(animeDetailsQueryOptions(id, name));
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      axios.get('http://127.0.0.1:8000/watchlist/', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
-      })
-      .then(response => {
-        setIsWatchlisted(response.data.includes(parseInt(id)));
-      });
-    }
-  }, [id, isLoggedIn]);
-
-  const handleWatchlistToggle = async () => {
-    const token = localStorage.getItem('accessToken');
-    const config = { headers: { 'Authorization': `Bearer ${token}` } };
-    const payload = { 'anime_id': parseInt(id) };
-
-    try {
-      if (isWatchlisted) {
-        await axios.delete('http://127.0.0.1:8000/watchlist/', { ...config, data: payload });
-        setIsWatchlisted(false);
-      } else {
-        await axios.post('http://127.0.0.1:8000/watchlist/', payload, config);
-        setIsWatchlisted(true);
-      }
-    } catch (error) {
-        console.error('Watchlist action failed:', error);
-    }
-  };
-
-  useEffect(() => {
-    const fetchAnime = async () => {
-      try {
-        const API_URL = `http://127.0.0.1:8000/v1/anime/${id}/${name}/`;
-        const response = await axios.get(API_URL);
-        setAnime(response.data);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAnime();
-  }, [id, name]);
-
-  if (loading) return <p>Loading...</p>;
+  if (isLoading) return <LoadingSpinner />;
   if (error) return <p>Error: Could not fetch anime details.</p>;
 
+  if (anime.slug && name !== anime.slug) {
+    return <Navigate to={`/anime/${id}/${anime.slug}/`} replace />;
+  }
+
   return (
-    <div>
-      <h1>{anime.title}</h1>
-      <img src={anime.cover_image} alt={anime.title} />
-      <p>{anime.description}</p>
-      {isLoggedIn && (
-        <button onClick={handleWatchlistToggle}>
-          {isWatchlisted ? 'Remove from Watchlist' : 'Add to Watchlist'}
-        </button>
-      )}
+    <div className="max-w-[1520px] mx-auto p-4 md:p-[30px]">
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex-shrink-0 w-full md:w-[300px]">
+          <img 
+            src={anime.cover_image} 
+            alt={anime.title} 
+            className="block rounded-lg shadow-lg object-cover h-auto max-w-full mx-auto"
+          />
+        </div>
+        <div className="flex-grow">
+          <h1 className="text-4xl font-bold mb-4 text-white">{anime.title}</h1>
+          <div className="mb-6">
+            <WatchlistButton anime={anime} />
+          </div>
+          <div className="prose prose-invert max-w-none">
+            <h3 className="text-xl font-semibold mb-2 text-gray-200">Description</h3>
+            <p className="text-gray-300 leading-relaxed whitespace-pre-line text-lg">
+              {anime.description}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-    
   );
 };
 
