@@ -2,6 +2,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -20,7 +21,13 @@ class CookieTokenRefreshView(TokenRefreshView):
             return Response({'error': 'Refresh token not found in cookies'}, status=status.HTTP_401_UNAUTHORIZED)
         
         # Inject it into the request data so the parent class can validate it
-        request.data['refresh'] = refresh_token
+        # Handle immutable QueryDict if necessary
+        if hasattr(request.data, '_mutable'):
+            request.data._mutable = True
+            request.data['refresh'] = refresh_token
+            request.data._mutable = False
+        else:
+            request.data['refresh'] = refresh_token
         response = super().post(request, *args, **kwargs)
         
         if response.status_code == 200:
@@ -47,21 +54,23 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 
 class LogoutView(APIView):
     def post(self, request):
-        try:
-            refresh_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
-            if refresh_token:
+        refresh_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
+        if refresh_token:
+            try:
                 # Blacklist the refresh token
                 token = RefreshToken(refresh_token)
                 token.blacklist()
-            
-            response = Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)
-            # Delete the cookies
-            response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
-            response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'])
-            return response
-            
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            except TokenError:
+                # Token is invalid or expired, but we still want to log out (clear cookies)
+                pass
+            except Exception as e:
+                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)
+        # Delete the cookies
+        response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'], path=settings.SIMPLE_JWT['AUTH_COOKIE_PATH'])
+        response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'], path=settings.SIMPLE_JWT['AUTH_COOKIE_PATH'])
+        return response
 
 
 class RegisterView(CreateAPIView):
