@@ -4,7 +4,7 @@ const AnimeCard = ({ anime, children }) => {
   return (
     <div className='w-[185px] relative'>
       <Link className='block w-full' to={`/anime/${anime.id}/${anime.slug}/`}>
-        <img className='w-[185px] h-[265px] object-cover' src={anime.cover_image} alt={anime.title} loading="lazy" />
+        <img className='w-[185px] h-[265px] object-cover' src={anime.coverImage} alt={anime.title} loading="lazy" />
       </Link>
       {children && (
         <div className="absolute top-2 right-2 z-10">

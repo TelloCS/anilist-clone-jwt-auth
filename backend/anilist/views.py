@@ -54,3 +54,21 @@ class AnimeDetailView(APIView):
             return Response(serializer.data)
         else:
             return Response({'error': 'Anime not found.'}, status=404)
+
+
+class SearchAnimeView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request: Request):
+        search_term = request.query_params.get('q', '').strip()
+        
+        if not search_term or len(search_term) < 3:
+            return Response({'results': []})
+
+        raw_media_list = search_anilist_anime(search_term)
+        
+        if raw_media_list is not None:
+            serializer = AnimeSerializer(raw_media_list, many=True)
+            return Response({'results': serializer.data})
+        else:
+            return Response({'error': 'Search failed to connect to AniList'}, status=502)

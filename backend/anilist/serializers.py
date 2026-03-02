@@ -1,42 +1,52 @@
 from rest_framework import serializers
+from django.utils.text import slugify
 import html, re
 
 
 class AnimeSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    season = serializers.CharField()
-    seasonYear = serializers.IntegerField()
-    cover_image = serializers.URLField(source='coverImage.extraLarge')
-
+    coverImage = serializers.URLField(source='coverImage.extraLarge', required=False)
     title = serializers.SerializerMethodField()
     slug = serializers.SerializerMethodField()
+    releaseDate = serializers.SerializerMethodField()
 
-    def get_title(self, obj):
-        english_title = obj['title'].get('english')
+    def get_title(self, obj: dict):
+        english_title = obj.get('title', {}).get('english')
         if english_title:
             return english_title
-        return obj['title'].get('romaji', '')
 
-    def get_slug(self, obj):
-        title = obj['title'].get('romaji')
+        return obj.get('title', {}).get('romaji') or 'Unknown Title'
 
+    def get_slug(self, obj: dict):
+        title = obj.get('title', {}).get('romaji')
         if not title:
             return ''
+        return slugify(title)
+    
+    def get_releaseDate(self, obj: dict):
+        season = obj.get('season')
+        year = obj.get('seasonYear')
         
-        slug_value = title.replace(' ', '-')
-        slug_value = re.sub(r'[^a-zA-Z0-9-]', '', slug_value)
-
-        return slug_value
+        if season and year:
+            return f"{season.title()} {year}"
+        elif year:
+            return str(year)
+        else:
+            return "TBA"
 
 
 class TrendingNowAnimeSerializer(AnimeSerializer):
-    meanScore = serializers.FloatField(allow_null=True)
-    episodes = serializers.IntegerField(allow_null=True)
-    status = serializers.CharField(allow_null=True)
+    meanScore = serializers.FloatField(allow_null=True, required=False)
+    episodes = serializers.IntegerField(allow_null=True, required=False)
+    status = serializers.CharField(allow_null=True, required=False)
 
     description = serializers.SerializerMethodField()
 
     def get_description(self, obj: dict):
-        raw_description = obj.get('description', '')
+        raw_description = obj.get('description')
+        
+        if not raw_description:
+            return "No description available."
+        
         clean_description = re.sub(r'<[^>]+>', '', raw_description)
         return html.unescape(clean_description)

@@ -22,7 +22,7 @@ const AnimeDetailPage = () => {
           <div className="w-[185px] relative">
             <div className='block w-full'>
               <img
-                src={anime.cover_image}
+                src={anime.coverImage}
                 alt={anime.title}
                 className="w-[215px] h-[300px] object-cover"
               />

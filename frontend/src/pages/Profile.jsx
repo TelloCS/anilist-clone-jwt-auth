@@ -34,9 +34,9 @@ export default function Profile() {
             <div className='grid gap-8 grid-cols-[repeat(auto-fill,minmax(185px,1fr))] justify-items-center justify-center'>
               {watchlist.map(item => {
                 const animeData = {
-                    id: item.anime_id,
+                    id: item.id,
                     title: item.title,
-                    cover_image: item.image_url,
+                    coverImage: item.coverImage,
                     slug: item.slug
                 };
                 return (

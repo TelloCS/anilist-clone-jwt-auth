@@ -2,6 +2,9 @@ from rest_framework import serializers
 from .models import *
 
 class WatchListSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='anime_id', read_only=True)
+    coverImage = serializers.URLField(source='image_url', read_only=True)
+
     class Meta:
         model = WatchList
-        fields = ['anime_id', 'title', 'image_url', 'slug']
+        fields = ['id', 'title', 'coverImage', 'slug']

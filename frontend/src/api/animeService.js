@@ -22,6 +22,10 @@ const animeService = {
     const response = await api.get(`/v1/trending?page=${page}`);
     return response.data;
   },
+  searchAnime: async (searchTerm) => {
+    const response = await api.get(`/v1/search?q=${searchTerm}`);
+    return response.data.results;
+  },
 };
 
 export const trendingAnimeQueryOptions = infiniteQueryOptions({
