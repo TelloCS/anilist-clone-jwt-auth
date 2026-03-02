@@ -1,6 +1,4 @@
-from .base import (
-    SIMPLE_JWT
-)
+from .base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'not-secret-key-for-testing'

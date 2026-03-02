@@ -9,4 +9,8 @@ exclude =
     .venv,
     env,
     .env,
-    manage.py,
+
+# This is the magic part for your Django settings
+per-file-ignores =
+    # Ignore "star import" and "undefined names" errors only in the settings folder
+    backend/settings/*.py: F403, F405

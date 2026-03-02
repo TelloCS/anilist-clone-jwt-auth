@@ -1,6 +1,4 @@
-from .base import (
-    SIMPLE_JWT
-)
+from .base import *
 from dotenv import load_dotenv
 import os
 
