@@ -31,7 +31,7 @@ export default function Profile() {
         <div className="flex-grow">
           <h3 className="text-2xl font-bold mb-6">Watchlist</h3>
           {watchlist && watchlist.length > 0 ? (
-            <div className='grid gap-[28px] grid-cols-[repeat(auto-fill,minmax(185px,1fr))]'>
+            <div className='grid gap-8 grid-cols-[repeat(auto-fill,minmax(185px,1fr))] justify-items-center justify-center'>
               {watchlist.map(item => {
                 const animeData = {
                     id: item.anime_id,
