@@ -23,7 +23,7 @@ def get_anime_by_season(season, seasonYear):
 
                 }
                 coverImage {
-                    large
+                    extraLarge
                 }
             }
         }
@@ -67,7 +67,7 @@ def get_trending_now_anime():
                 romaji
             }
             coverImage {
-                large
+                extraLarge
             }
             meanScore
             episodes
@@ -99,7 +99,7 @@ def get_anime_by_id(anime_id: int):
                     romaji
                 }
                 coverImage {
-                    large
+                    extraLarge
                 }
                 description
                 meanScore

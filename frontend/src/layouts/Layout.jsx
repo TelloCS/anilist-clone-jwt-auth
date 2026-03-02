@@ -9,7 +9,7 @@ export default function Layout() {
   }
 
   return (
-    <div className="bg-[#0D1821] min-h-screen text-white">
+    <div className="bg-[#171717] min-h-screen text-white font-mono">
       <Navbar />
       <Outlet />
     </div>

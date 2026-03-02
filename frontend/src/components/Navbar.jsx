@@ -8,32 +8,29 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-gray-700 bg-[#0D1821]">
+    <nav className="sticky top-0 z-50 border-b border-[#292929] bg-[#171717]">
       <div className="max-w-[1520px] mx-auto px-4 md:px-[30px]">
         <div className="flex justify-between items-center py-4 min-h-[80px] w-full">
-            <Link to="/" className="text-2xl font-bold text-[#73E2A7]">
-              <Tv />
+            <Link to="/" className="text-[#858585] hover:text-white">
+              <Tv size={32} />
             </Link>
 
-            <ul className="hidden md:flex gap-8 text-md items-center">
-              <li className="hover:underline">
-                <Link to="/">Home</Link>
-              </li>
+            <ul className="hidden md:flex gap-8 text-md items-center font-semibold">
               {isLoggedIn ? (
                 <>
-                  <li className="hover:underline">
+                  <li className="text-[#858585] hover:underline active hover:text-white">
                     <Link to="/profile/">Profile</Link>
                   </li>
                   <li>
-                    <button className="hover:underline cursor-pointer" onClick={handleLogout}>Logout</button>
+                    <button className="text-[#858585] hover:underline hover:text-white cursor-pointer" onClick={handleLogout}>Logout</button>
                   </li>
                 </>
               ) : (
                 <>
-                  <li className="hover:underline">
+                  <li className="text-[#858585] hover:underline hover:text-white">
                     <Link to="/login/">Login</Link>
                   </li>
-                  <li className="hover:underline">
+                  <li className="text-[#858585] hover:underline hover:text-white">
                     <Link to="/register/">Register</Link>
                   </li>
                 </>
@@ -42,7 +39,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden text-white focus:outline-none"
+              className="md:hidden text-[#858585] focus:outline-none"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -52,7 +49,7 @@ export default function Navbar() {
 
       {/* Mobile Dropdown Menu */}
       {isOpen && (
-        <div className="md:hidden border-t border-gray-700 bg-[#0D1821]">
+        <div className="md:hidden border-t border-gray-700 bg-[#171717]">
           <ul className="flex flex-col items-center gap-6 py-8 text-lg">
             <li className="hover:underline">
               <Link to="/" onClick={() => setIsOpen(false)}>Home</Link>
