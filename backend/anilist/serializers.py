@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.utils.text import slugify
-import html, re
+import html
+import re
 
 
 class AnimeSerializer(serializers.Serializer):
@@ -22,11 +23,11 @@ class AnimeSerializer(serializers.Serializer):
         if not title:
             return ''
         return slugify(title)
-    
+
     def get_releaseDate(self, obj: dict):
         season = obj.get('season')
         year = obj.get('seasonYear')
-        
+
         if season and year:
             return f"{season.title()} {year}"
         elif year:
@@ -44,9 +45,9 @@ class TrendingNowAnimeSerializer(AnimeSerializer):
 
     def get_description(self, obj: dict):
         raw_description = obj.get('description')
-        
+
         if not raw_description:
             return "No description available."
-        
+
         clean_description = re.sub(r'<[^>]+>', '', raw_description)
         return html.unescape(clean_description)

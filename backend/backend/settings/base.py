@@ -32,7 +32,7 @@ SIMPLE_JWT = {
     'AUTH_COOKIE_REFRESH': 'refresh_token',
     'AUTH_COOKIE_HTTP_ONLY': True,
     'AUTH_COOKIE_PATH': '/',
-    'AUTH_COOKIE_SAMESITE': 'Lax', # 'Lax' protects against CSRF while allowing seamless local dev
+    'AUTH_COOKIE_SAMESITE': 'Lax',  # 'Lax' protects against CSRF while allowing seamless local dev
 }
 
 CSRF_COOKIE_HTTPONLY = False
@@ -169,6 +169,6 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console"],
-        "level": "INFO", # Set this to 'INFO' or 'DEBUG' for development
+        "level": "INFO",  # Set this to 'INFO' or 'DEBUG' for development
     },
 }

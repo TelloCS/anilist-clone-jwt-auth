@@ -1,5 +1,6 @@
 from django.conf import settings
 
+
 def set_jwt_cookies(response, access_token, refresh_token=None):
     response.set_cookie(
         key=settings.SIMPLE_JWT['AUTH_COOKIE'],

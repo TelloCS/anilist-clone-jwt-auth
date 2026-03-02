@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from .models import *
+from .models import (
+    WatchList
+)
+
 
 class WatchListSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='anime_id', read_only=True)

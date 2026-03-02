@@ -24,6 +24,7 @@ django-ratelimit==4.1.0
 django-redis==6.0.0
 djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
+flake8==7.3.0
 frozenlist==1.8.0
 gunicorn==23.0.0
 hiredis==3.3.0
@@ -32,6 +33,7 @@ iniconfig==2.3.0
 joblib==1.5.2
 kombu==5.6.2
 lxml==6.0.2
+mccabe==0.7.0
 multidict==6.7.0
 numpy==2.4.2
 packaging==25.0
@@ -39,7 +41,9 @@ pluggy==1.6.0
 prompt_toolkit==3.0.52
 propcache==0.4.1
 psycopg2-binary==2.9.10
+pycodestyle==2.14.0
 pycparser==3.0
+pyflakes==3.4.0
 Pygments==2.19.2
 PyJWT==2.10.1
 python-dateutil==2.9.0.post0
