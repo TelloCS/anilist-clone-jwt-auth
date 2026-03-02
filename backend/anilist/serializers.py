@@ -6,7 +6,7 @@ class AnimeSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     season = serializers.CharField()
     seasonYear = serializers.IntegerField()
-    cover_image = serializers.URLField(source='coverImage.large')
+    cover_image = serializers.URLField(source='coverImage.extraLarge')
 
     title = serializers.SerializerMethodField()
     slug = serializers.SerializerMethodField()

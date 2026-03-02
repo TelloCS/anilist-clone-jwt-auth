@@ -47,8 +47,16 @@ class CookieTokenObtainPairView(TokenObtainPairView):
             access = response.data.get('access')
             refresh = response.data.get('refresh')
             set_jwt_cookies(response, access, refresh)
-            # Remove tokens from the JSON body for security
-            response.data = {'message': 'Successfully logged in'}
+            
+            # Return user data so frontend can update state immediately
+            try:
+                user = CustomUser.objects.get(email=request.data.get('email'))
+                response.data = {
+                    'message': 'Successfully logged in',
+                    'user': UserSerializer(user).data
+                }
+            except CustomUser.DoesNotExist:
+                response.data = {'message': 'Successfully logged in'}
         return response
 
 

@@ -16,20 +16,20 @@ export default function Profile() {
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-[280px] flex-shrink-0 md:sticky md:top-24 md:self-start">
           <h2 className="text-2xl font-bold mb-6">Profile</h2>
-          <div className="bg-[#1A2634] p-6 rounded-lg shadow-lg">
+          <div className="bg-[#232323] p-6 rounded-lg">
             <div className="mb-6">
-              <p className="text-sm text-gray-400 mb-1">Username</p>
-              <p className="text-xl font-medium">{username}</p>
+              <p className="text-sm text-[#858585] mb-1">Username</p>
+              <p className="">{username}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-400 mb-1">Email</p>
-              <p className="text-lg break-words text-gray-200">{email}</p>
+              <p className="text-sm text-[#858585] mb-1">Email</p>
+              <p className="">{email}</p>
             </div>
           </div>
         </div>
 
         <div className="flex-grow">
-          <h3 className="text-2xl font-bold mb-6">My Watchlist</h3>
+          <h3 className="text-2xl font-bold mb-6">Watchlist</h3>
           {watchlist && watchlist.length > 0 ? (
             <div className='grid gap-[28px] grid-cols-[repeat(auto-fill,minmax(185px,1fr))]'>
               {watchlist.map(item => {
@@ -41,7 +41,7 @@ export default function Profile() {
                 };
                 return (
                   <AnimeCard key={item.anime_id} anime={animeData}>
-                    <WatchlistButton anime={animeData} minimal={true} />
+                    <WatchlistButton anime={animeData} />
                   </AnimeCard>
                 );
               })}
