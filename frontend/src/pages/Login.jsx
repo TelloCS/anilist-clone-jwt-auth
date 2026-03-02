@@ -11,6 +11,9 @@ export default function Login() {
     email: "",
     password: "",
   });
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -18,43 +21,38 @@ export default function Login() {
       [e.target.name]: e.target.value,
     });
   };
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [error, setError] = useState(null)
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isLoggingIn) {
-      return
-    }
+    if (isLoggingIn) return;
+    
     setError(null);
     setSuccessMessage(null);
 
     try {
       await login(formData);
-      console.log("Success!");
       setSuccessMessage("Login Successful!");
-      // Force a reload to ensure AuthContext picks up the new cookies and fetches user data
       window.location.href = "/";
-    }
-    catch (error) {
+    } catch (error) {
       const message = getErrorMessage(error, "Login failed. Please check your connection.");
       setError(message);
     }
   };
+
   return (
-    <div className="flex flex-col items-center justify-center bg-[#171717] py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-[400px] bg-white border border-neutral-200 p-8 mt-24 rounded-3xl shadow-sm">
+    <div className="h-[calc(100vh-80px)] flex flex-col items-center justify-center bg-[#171717] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[400px] bg-[#222124] border border-[#292929] p-8">
         <div className="flex flex-col items-center text-center pb-8">
-          <div className='bg-neutral-100 p-3 rounded-2xl mb-4'>
-            <LogIn size={28} className="text-neutral-700" />
+          <div className='bg-[#383838] p-3 mb-4'>
+            <LogIn size={28} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-neutral-800">Sign in with email</h1>
+          <h1 className="text-2xl font-bold text-white">Sign in with email</h1>
         </div>
-        <form className="space-y-4">
+        
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div className='relative'>
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <Mail size={18} className="text-neutral-400" />
+              <Mail size={18} className="text-[#858585]" />
             </div>
             <FormInput
               type="email"
@@ -64,9 +62,10 @@ export default function Login() {
               onChange={handleChange}
             />
           </div>
+          
           <div className='relative'>
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <Lock size={18} className="text-neutral-400" />
+              <Lock size={18} className="text-[#858585]" />
             </div>
             <FormInput
               type={showPassword ? 'text' : 'password'}
@@ -77,13 +76,18 @@ export default function Login() {
             />
             <PasswordToggle isVisible={showPassword} onToggle={() => setShowPassword(!showPassword)} />
           </div>
+
+          {error && <p className="text-sm text-red-500 mt-2 text-center">{error}</p>}
+          {successMessage && <p className="text-sm text-green-500 mt-2 text-center">{successMessage}</p>}
+
+          <button 
+            className="w-full py-2.5 px-4 mt-6 text-sm font-medium text-white bg-[#171717] hover:bg-green-900 focus:ring-4 focus:outline-none focus:ring-blue-500/50 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+            type="submit" 
+            disabled={isLoggingIn} 
+          >
+            {isLoggingIn ? "Logging in..." : "Log in"}
+          </button>
         </form>
-        {error && <p className="text-xs my-2" style={{ color: "red" }}>{error}</p>}
-        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-        <button className="w-full py-2.5 px-4 text-sm font-medium text-white bg-neutral-900 rounded-lg hover:bg-neutral-800 focus:ring-4 focus:outline-none focus:ring-neutral-300 transition-colors disabled:opacity-70 disabled:cursor-not-allowed mt-2"
-          type="submit" disabled={isLoggingIn} onClick={handleSubmit}>
-          Login
-        </button>
       </div>
     </div>
   );
@@ -91,9 +95,10 @@ export default function Login() {
 
 const PasswordToggle = ({ isVisible, onToggle }) => (
   <button
-    type="button"
+    type="button" 
     onClick={onToggle}
-    className="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-400 hover:text-neutral-600 transition-colors"
+    className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#858585] hover:text-white transition-colors"
+    aria-label="Toggle password visibility"
   >
     {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
   </button>

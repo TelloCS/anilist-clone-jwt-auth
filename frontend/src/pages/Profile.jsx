@@ -40,7 +40,7 @@ export default function Profile() {
                     slug: item.slug
                 };
                 return (
-                  <AnimeCard key={item.anime_id} anime={animeData}>
+                  <AnimeCard key={item.id} anime={animeData}>
                     <WatchlistButton anime={animeData} />
                   </AnimeCard>
                 );

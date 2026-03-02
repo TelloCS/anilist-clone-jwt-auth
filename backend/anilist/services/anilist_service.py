@@ -106,7 +106,7 @@ def get_anime_by_id(anime_id: int):
     return raw_data
 
 def search_anilist_anime(search_term: str):
-    clean_term = search_term.lower().strip()
+    clean_term = search_term.lower().replace(" ", "_")
     cache_key = f"anime_search_{clean_term}"
     cached_data = cache.get(cache_key)
     if cached_data:
