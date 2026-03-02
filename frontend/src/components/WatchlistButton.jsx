@@ -23,7 +23,7 @@ const WatchlistButton = ({ anime }) => {
         return await api.post('/watchlist/', {
           anime_id: anime.id,
           title: anime.title,
-          image_url: anime.cover_image,
+          image_url: anime.coverImage,
           slug: anime.slug
         });
       }
