@@ -1,4 +1,6 @@
-from .base import *
+from .base import (
+    SIMPLE_JWT
+)
 from dotenv import load_dotenv
 import os
 
@@ -32,7 +34,7 @@ SIMPLE_JWT['AUTH_COOKIE_SAMESITE'] = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 
 # --- CORS & CSRF ---
-# If Nginx serves both from the same domain, you might not even need CORS! 
+# If Nginx serves both from the same domain, you might not even need CORS!
 # But if React is on a subdomain (app.domain.com), list it here.
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(' ')
 CORS_ALLOW_CREDENTIALS = True

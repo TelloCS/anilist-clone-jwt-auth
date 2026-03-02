@@ -3,7 +3,11 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.request import Request
-from .serializers import *
+from .serializers import (
+    WatchList,
+    WatchListSerializer
+)
+
 
 class WatchListView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -12,7 +16,7 @@ class WatchListView(APIView):
         watchlist_items = WatchList.objects.filter(user=request.user)
         serializer = WatchListSerializer(watchlist_items, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request: Request):
         anime_id = request.data.get('id')
         title = request.data.get('title')
@@ -21,18 +25,18 @@ class WatchListView(APIView):
 
         if not anime_id:
             return Response({'error': 'id is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         try:
             WatchList.objects.create(user=request.user, anime_id=anime_id, title=title, image_url=image_url, slug=slug)
             return Response({'success': 'Anime added to watchlist.'}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+
     def delete(self, request: Request):
         anime_id = request.data.get('id')
         if not anime_id:
             return Response({'error': 'id is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         try:
             watchlist_item = WatchList.objects.get(user=request.user, anime_id=anime_id)
             watchlist_item.delete()

@@ -1,5 +1,11 @@
 from django.urls import path
-from .views import *
+from .views import (
+    AnimeBySeasonView,
+    TrendingAnimeView,
+    AnimeDetailView,
+    SearchAnimeView
+)
+
 
 urlpatterns = [
     path('anime', AnimeBySeasonView.as_view(), name='anime-by-season'),

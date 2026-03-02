@@ -2,12 +2,20 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
-from .serializers import *
-from .services.anilist_service import *
+from .serializers import (
+    AnimeSerializer,
+    TrendingNowAnimeSerializer
+)
+from .services.anilist_service import (
+    get_anime_by_season,
+    get_trending_now_anime,
+    get_anime_by_id,
+    search_anilist_anime
+)
 
 
 class AnimeBySeasonView(APIView):
-    permission_classes = (AllowAny,) 
+    permission_classes = (AllowAny,)
 
     def get(self, request: Request):
         season = request.query_params.get('season')
@@ -20,7 +28,7 @@ class AnimeBySeasonView(APIView):
             return Response(serializer.data)
         else:
             return Response({'error': 'Could not fetch data'}, status=400)
-        
+
 
 class TrendingAnimeView(APIView):
     permission_classes = (AllowAny,)
@@ -32,22 +40,22 @@ class TrendingAnimeView(APIView):
         if raw_data:
             page_info = raw_data['data']['Page']['pageInfo']
             media_list = raw_data['data']['Page']['media']
-            
+
             serializer = TrendingNowAnimeSerializer(media_list, many=True)
             return Response({
                 'pageInfo': page_info,
                 'results': serializer.data
             })
         else:
-           return Response({'error': 'Could not fetch data'}, status=400)
-   
+            return Response({'error': 'Could not fetch data'}, status=400)
+
 
 class AnimeDetailView(APIView):
     permission_classes = (AllowAny,)
-    
+
     def get(self, request, pk, slug):
         raw_data = get_anime_by_id(pk)
-        
+
         if raw_data and 'data' in raw_data and raw_data['data']['Media']:
             anime_data = raw_data['data']['Media']
             serializer = TrendingNowAnimeSerializer(anime_data)
@@ -61,12 +69,12 @@ class SearchAnimeView(APIView):
 
     def get(self, request: Request):
         search_term = request.query_params.get('q', '').strip()
-        
+
         if not search_term or len(search_term) < 3:
             return Response({'results': []})
 
         raw_media_list = search_anilist_anime(search_term)
-        
+
         if raw_media_list is not None:
             serializer = AnimeSerializer(raw_media_list, many=True)
             return Response({'results': serializer.data})

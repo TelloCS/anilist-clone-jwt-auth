@@ -12,8 +12,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     )
 
     password_confirm = serializers.CharField(
-        write_only=True, 
-        required=True, 
+        write_only=True,
+        required=True,
         style={'input_type': 'password'}
     )
 
@@ -26,7 +26,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"password_confirm": "Password fields didn't match."}
             )
-        
+
         return attrs
 
     def create(self, validated_data):
