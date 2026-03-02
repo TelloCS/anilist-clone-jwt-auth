@@ -13,7 +13,7 @@ const WatchlistButton = ({ anime }) => {
     enabled: isLoggedIn,
   });
 
-  const isWatchlisted = watchlist?.some(item => item.anime_id === anime.id);
+  const isWatchlisted = watchlist?.some(item => item.id === anime.id);
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -21,9 +21,9 @@ const WatchlistButton = ({ anime }) => {
         return await animeService.removeFromWatchlist(anime.id);
       } else {
         return await api.post('/watchlist/', {
-          anime_id: anime.id,
+          id: anime.id,
           title: anime.title,
-          image_url: anime.coverImage,
+          coverImage: anime.coverImage,
           slug: anime.slug
         });
       }

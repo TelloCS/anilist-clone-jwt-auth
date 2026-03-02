@@ -9,7 +9,7 @@ export default function SearchDropdown({
   onSelect
 }) {
   const listRef = useRef(null);
-  
+
   useEffect(() => {
     if (selectedIndex >= 0 && listRef.current) {
       const activeElement = listRef.current.children[selectedIndex];
@@ -20,7 +20,7 @@ export default function SearchDropdown({
   if (!isOpen) return null;
 
   return (
-    <div className="absolute top-full left-0 w-full mt-2 overflow-hidden rounded shadow-xl bg-[#222124]">
+    <div className="absolute top-full left-0 w-full mt-2 overflow-hidden rounded bg-[#222124]">
       {isFetching ? (
         <div className="p-4 text-center text-gray-400 text-sm">Searching...</div>
       ) : results?.length === 0 ? (
@@ -48,16 +48,16 @@ export default function SearchDropdown({
                     ${isActive ? 'bg-[#383838]' : 'hover:bg-[#383838]'}
                   `}
                 >
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm truncate">{anime.title}</p>
+                    <p className="text-xs text-gray-400 mt-1">{anime.releaseDate}</p>
+                  </div>
                   <img
                     className="w-12 h-16 object-cover rounded"
                     src={anime.coverImage}
                     alt={anime.title}
                     loading="lazy"
                   />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm truncate">{anime.title}</p>
-                    <p className="text-xs text-gray-400 mt-1">{anime.releaseDate}</p>
-                  </div>
                 </Link>
               </li>
             );

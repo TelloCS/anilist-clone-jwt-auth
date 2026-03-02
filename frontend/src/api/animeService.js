@@ -7,11 +7,11 @@ const animeService = {
     return response.data;
   },
   addToWatchlist: async (animeId) => {
-    const response = await api.post("/watchlist/", { anime_id: animeId });
+    const response = await api.post("/watchlist/", { id: animeId });
     return response.data;
   },
   removeFromWatchlist: async (animeId) => {
-    const response = await api.delete("/watchlist/", { data: { anime_id: animeId } });
+    const response = await api.delete("/watchlist/", { data: { id: animeId } });
     return response.data;
   },
   getAnimeDetails: async (id, name) => {

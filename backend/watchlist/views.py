@@ -14,13 +14,13 @@ class WatchListView(APIView):
         return Response(serializer.data)
     
     def post(self, request: Request):
-        anime_id = request.data.get('anime_id')
+        anime_id = request.data.get('id')
         title = request.data.get('title')
-        image_url = request.data.get('image_url')
+        image_url = request.data.get('coverImage')
         slug = request.data.get('slug')
 
         if not anime_id:
-            return Response({'error': 'anime_id is required.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'id is required.'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
             WatchList.objects.create(user=request.user, anime_id=anime_id, title=title, image_url=image_url, slug=slug)
@@ -29,9 +29,9 @@ class WatchListView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request: Request):
-        anime_id = request.data.get('anime_id')
+        anime_id = request.data.get('id')
         if not anime_id:
-            return Response({'error': 'anime_id is required.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'id is required.'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
             watchlist_item = WatchList.objects.get(user=request.user, anime_id=anime_id)
