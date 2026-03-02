@@ -26,13 +26,19 @@ class TrendingAnimeView(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request: Request):
-       raw_data = get_trending_now_anime()
+        page = int(request.query_params.get('page', 1))
+        raw_data = get_trending_now_anime(page=page)
 
-       if raw_data:
-           media_list = raw_data['data']['Page']['media']
-           serializer = TrendingNowAnimeSerializer(media_list, many=True)
-           return Response(serializer.data)
-       else:
+        if raw_data:
+            page_info = raw_data['data']['Page']['pageInfo']
+            media_list = raw_data['data']['Page']['media']
+            
+            serializer = TrendingNowAnimeSerializer(media_list, many=True)
+            return Response({
+                'pageInfo': page_info,
+                'results': serializer.data
+            })
+        else:
            return Response({'error': 'Could not fetch data'}, status=400)
    
 

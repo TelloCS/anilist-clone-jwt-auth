@@ -44,47 +44,61 @@ def get_anime_by_season(season, seasonYear):
         print(f"AniList API request failed: {e}")
         return None
     
-def get_trending_now_anime():
-    cache_key = "trending_anime_data"
+def get_trending_now_anime(page: int = 1):
+    cache_key = f"trending_anime_data_page_{page}"
     timeout = 60 * 60
     
     cached_data = cache.get(cache_key)
     if cached_data:
-        logger.info("Cache hit for trending anime.")
         return cached_data
     
-    logger.info("Cache miss for trending anime. Fetching from AniList API...")
-
+    logger.info(f"Fetching page {page} from AniList...")
+    
     query = """
-    query {
-        Page(page: 1, perPage: 18) {
-            media(type: ANIME, sort: TRENDING_DESC) {
-            id
-            season
-            seasonYear
-            title {
-                english
-                romaji
+    query ($page: Int, $perPage: Int) {
+        Page(page: $page, perPage: $perPage) {
+            pageInfo {
+                currentPage
+                hasNextPage
             }
-            coverImage {
-                extraLarge
-            }
-            meanScore
-            episodes
-            status
+            media(type: ANIME, sort: [TRENDING_DESC]) {
+                id
+                season
+                seasonYear
+                title {
+                    english
+                    romaji
+                }
+                coverImage {
+                    extraLarge
+                }
+                meanScore
+                episodes
+                status
             }
         }
     }
     """
+    
+    variables = {
+        "page": page,
+        "perPage": 18
+    }
 
     try:
-        response = requests.post(ANILIST_API_URL, json={'query': query})
+        response = requests.post(ANILIST_API_URL, json={'query': query, 'variables': variables})
+        
         if response.status_code == 200:
             raw_data = response.json()
             cache.set(cache_key, raw_data, timeout)
             return raw_data
+        else:
+            print(f"AniList Error {response.status_code}: {response.text}")
+            logger.error(f"AniList Error: {response.text}")
+            return None
+            
     except requests.exceptions.RequestException as e:
-        print(f"AniList API request failed: {e}")
+        print(f"Network failure: {e}")
         return None
 
 def get_anime_by_id(anime_id: int):

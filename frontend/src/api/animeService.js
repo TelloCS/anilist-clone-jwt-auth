@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, infiniteQueryOptions } from "@tanstack/react-query";
 import api from "./api";
 
 const animeService = {
@@ -18,15 +18,23 @@ const animeService = {
     const response = await api.get(`/v1/anime/${id}/${name}/`);
     return response.data;
   },
-  getTrendingAnime: async () => {
-    const response = await api.get("/v1/trending");
+  getTrendingAnime: async (page) => {
+    const response = await api.get(`/v1/trending?page=${page}`);
     return response.data;
   },
 };
 
-export const trendingAnimeQueryOptions = queryOptions({
+export const trendingAnimeQueryOptions = infiniteQueryOptions({
   queryKey: ["trendingAnime"],
-  queryFn: animeService.getTrendingAnime,
+  initialPageParam: 1,
+  queryFn: ({ pageParam }) => animeService.getTrendingAnime(pageParam),
+  getNextPageParam: (lastPage) => {
+    if (lastPage.pageInfo.hasNextPage) {
+      return lastPage.pageInfo.currentPage + 1;
+    }
+    return undefined;
+  },
+  retry: false
 });
 
 export const animeDetailsQueryOptions = (id, name) => queryOptions({
