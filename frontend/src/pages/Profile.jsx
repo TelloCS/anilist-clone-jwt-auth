@@ -34,10 +34,10 @@ export default function Profile() {
             <div className='grid gap-8 grid-cols-[repeat(auto-fill,minmax(185px,1fr))] justify-items-center justify-center'>
               {watchlist.map(item => {
                 const animeData = {
-                    id: item.id,
-                    title: item.title,
-                    coverImage: item.coverImage,
-                    slug: item.slug
+                  id: item.id,
+                  title: item.title,
+                  coverImage: item.coverImage,
+                  slug: item.slug
                 };
                 return (
                   <AnimeCard key={item.id} anime={animeData}>
