@@ -25,7 +25,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLoggingIn) return;
-    
+
     setError(null);
     setSuccessMessage(null);
 
@@ -48,7 +48,7 @@ export default function Login() {
           </div>
           <h1 className="text-2xl font-bold text-white">Sign in with email</h1>
         </div>
-        
+
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className='relative'>
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -62,7 +62,7 @@ export default function Login() {
               onChange={handleChange}
             />
           </div>
-          
+
           <div className='relative'>
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <Lock size={18} className="text-[#858585]" />
@@ -80,10 +80,10 @@ export default function Login() {
           {error && <p className="text-sm text-red-500 mt-2 text-center">{error}</p>}
           {successMessage && <p className="text-sm text-green-500 mt-2 text-center">{successMessage}</p>}
 
-          <button 
+          <button
             className="w-full py-2.5 px-4 mt-6 text-sm font-medium text-white bg-[#171717] hover:bg-green-900 focus:ring-4 focus:outline-none focus:ring-blue-500/50 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-            type="submit" 
-            disabled={isLoggingIn} 
+            type="submit"
+            disabled={isLoggingIn}
           >
             {isLoggingIn ? "Logging in..." : "Log in"}
           </button>
@@ -95,7 +95,7 @@ export default function Login() {
 
 const PasswordToggle = ({ isVisible, onToggle }) => (
   <button
-    type="button" 
+    type="button"
     onClick={onToggle}
     className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#858585] hover:text-white transition-colors"
     aria-label="Toggle password visibility"

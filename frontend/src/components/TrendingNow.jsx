@@ -18,7 +18,7 @@ export default function TrendingNow() {
   const loadMoreRef = useRef(null);
 
   useEffect(() => {
-    const currentNode = loadMoreRef.current;
+    if (!hasNextPage || isFetchingNextPage) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -29,6 +29,7 @@ export default function TrendingNow() {
       { threshold: 0.1 }
     );
 
+    const currentNode = loadMoreRef.current;
     if (currentNode) {
       observer.observe(currentNode);
     }

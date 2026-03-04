@@ -10,7 +10,7 @@ const WatchlistButton = ({ anime }) => {
 
   const { data: watchlist } = useQuery({
     ...watchlistQueryOptions,
-    enabled: isLoggedIn,
+    enabled: !!isLoggedIn,
   });
 
   const isWatchlisted = watchlist?.some(item => item.id === anime.id);
@@ -39,7 +39,7 @@ const WatchlistButton = ({ anime }) => {
   if (!isLoggedIn) return null;
 
   return (
-    <button 
+    <button
       onClick={(e) => {
         e.preventDefault();
         mutation.mutate();
@@ -47,8 +47,8 @@ const WatchlistButton = ({ anime }) => {
       disabled={mutation.isPending}
       className={`
         group w-10 h-10 flex items-center justify-center rounded-full backdrop-blur-md shadow-lg transition-all duration-400
-        ${isWatchlisted 
-          ? 'bg-[#5dc12f] text-[#0D1821] hover:bg-[#e85d75] hover:text-white' 
+        ${isWatchlisted
+          ? 'bg-[#5dc12f] text-[#0D1821] hover:bg-[#e85d75] hover:text-white'
           : 'bg-black/20 text-white hover:bg-[#5dc12f] hover:text-[#0D1821]'
         }
         ${mutation.isPending ? 'opacity-50 cursor-not-allowed' : ''}
@@ -56,14 +56,14 @@ const WatchlistButton = ({ anime }) => {
       title={isWatchlisted ? 'Remove from Watchlist' : 'Add to Watchlist'}
     >
       {mutation.isPending ? (
-         <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
       ) : isWatchlisted ? (
         <>
           <Check size={16} className="block group-hover:hidden" />
           <X size={16} className="hidden group-hover:block" />
         </>
       ) : (
-         <Plus size={16} />
+        <Plus size={16} />
       )}
     </button>
   );
