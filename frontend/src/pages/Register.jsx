@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getErrorMessage } from "../utils/errorHelpers";
 import FormInput from "../components/FormInput";
@@ -7,8 +6,6 @@ import { UserPlus, User, Mail, Lock, EyeOff, Eye } from 'lucide-react';
 
 export default function Register() {
   const { register, isRegistering } = useAuth();
-  const navigate = useNavigate();
-  
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -42,10 +39,10 @@ export default function Register() {
 
     try {
       await register(formData);
-      setSuccessMessage("Registration Successful! Redirecting to login...");
+      setSuccessMessage("Account created! Logging you in...");
       setTimeout(() => {
-        navigate("/login/");
-      }, 2000);
+        window.location.href = "/";
+      }, 1500);
     } catch (error) {
       const message = getErrorMessage(error, "Registration failed. Please try again.");
       setError(message);
@@ -121,7 +118,7 @@ export default function Register() {
 
           <button
             className="w-full py-2.5 px-4 mt-6 text-sm font-medium text-white bg-[#171717] hover:bg-green-900 focus:ring-4 focus:outline-none focus:ring-blue-500/50 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-            type="submit" 
+            type="submit"
             disabled={isRegistering}
           >
             {isRegistering ? "Creating Account..." : "Register"}

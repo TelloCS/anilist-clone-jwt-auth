@@ -18,15 +18,12 @@ class CustomJWTAuthentication(JWTAuthentication):
 
         validated_token = self.get_validated_token(raw_token)
 
-        # Enforce CSRF only if we are extracting the token from cookies.
-        # If the token came from the Authorization header, CSRF isn't strictly necessary.
         if header is None:
             self.enforce_csrf(request)
 
         return self.get_user(validated_token), validated_token
 
     def enforce_csrf(self, request):
-        # DRF's CSRFCheck requires a dummy get_response callable
         check = CSRFCheck(get_response=lambda req: None)
         check.process_request(request)
         reason = check.process_view(request, None, (), {})
