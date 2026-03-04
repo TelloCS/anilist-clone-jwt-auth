@@ -1,11 +1,16 @@
 import api from "./api";
 
 const authService = {
+    getCsrfToken: async () => {
+    await api.get("/api/csrf/"); 
+  },
   login: async (credentials) => {
+    await authService.getCsrfToken();
     const response = await api.post("/api/login/", credentials);
     return response.data;
   },
   register: async (userData) => {
+    await authService.getCsrfToken();
     const response = await api.post("/api/register/", userData);
     return response.data;
   },

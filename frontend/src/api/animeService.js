@@ -44,11 +44,13 @@ export const trendingAnimeQueryOptions = infiniteQueryOptions({
 export const animeDetailsQueryOptions = (id, name) => queryOptions({
   queryKey: ["anime", id],
   queryFn: () => animeService.getAnimeDetails(id, name),
+  retry: false
 });
 
 export const watchlistQueryOptions = queryOptions({
   queryKey: ["watchlist"],
   queryFn: animeService.getWatchlist,
+  retry: false
 });
 
 export default animeService;

@@ -9,7 +9,10 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = False
 
 # Your VPS IP or domain name
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(' ')
+
+# Tells DRF to trust the real IP passed by Nginx
+REST_FRAMEWORK['NUM_PROXIES'] = 1
 
 # --- Reverse Proxy Configuration (Nginx) ---
 # Tells Django it's sitting behind Nginx which is handling the HTTPS
@@ -34,6 +37,6 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 # --- CORS & CSRF ---
 # If Nginx serves both from the same domain, you might not even need CORS!
 # But if React is on a subdomain (app.domain.com), list it here.
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(' ')
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(' ')
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(' ')
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(' ')

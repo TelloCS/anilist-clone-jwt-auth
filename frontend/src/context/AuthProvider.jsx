@@ -13,20 +13,18 @@ const AuthProvider = ({ children }) => {
   });
 
   const isLoggedIn = !!user;
-  const username = user?.username || "";
-  const email = user?.email || "";
 
   const loginMutation = useMutation({
     mutationFn: authService.login,
     onSuccess: (data) => {
-      queryClient.setQueryData(["currentUser"], data);
+      queryClient.setQueryData(["currentUser"], data.user || data);
     },
   });
 
   const registerMutation = useMutation({
     mutationFn: authService.register,
-    onSuccess: () => {
-      // Registration usually doesn't log you in immediately with JWT, so we don't set user data here
+    onSuccess: (data) => {
+      queryClient.setQueryData(["currentUser"], data.user || data);
     },
   });
 
@@ -35,6 +33,7 @@ const AuthProvider = ({ children }) => {
     onSuccess: () => {
       queryClient.setQueryData(["currentUser"], null);
       queryClient.clear();
+      window.location.href = "/login/";
     },
   });
 
@@ -49,17 +48,19 @@ const AuthProvider = ({ children }) => {
   const handleLogout = async () => {
     try {
       await logoutMutation.mutateAsync();
-      console.log("Log out successful!");
     } catch (error) {
       console.error("Failed to logout", error.response?.data || error.message);
+      queryClient.setQueryData(["currentUser"], null);
+      window.location.href = "/login/";
     }
   };
 
   return (
     <AuthContext.Provider value={{
+      user,
       isLoggedIn,
-      username,
-      email,
+      username: user?.username || "",
+      email: user?.email || "",
       login,
       register,
       handleLogout,

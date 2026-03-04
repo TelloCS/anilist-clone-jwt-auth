@@ -21,3 +21,15 @@ def set_jwt_cookies(response, access_token, refresh_token=None):
             samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
             path=settings.SIMPLE_JWT['AUTH_COOKIE_PATH']
         )
+
+
+def clear_jwt_cookies(response):
+    cookie_kwargs = {
+        'path': settings.SIMPLE_JWT['AUTH_COOKIE_PATH'],
+        'samesite': settings.SIMPLE_JWT.get('AUTH_COOKIE_SAMESITE', 'Lax'),
+    }
+
+    response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'], **cookie_kwargs)
+    response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'], **cookie_kwargs)
+
+    return response
