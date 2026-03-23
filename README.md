@@ -4,10 +4,10 @@ Django and React based project that integrates the AniList GraphQL API to demons
 ## Local Development
 To spin up the development environment with hot-reloading:
 ```shell
-docker compose -f docker-compose.yml up --build
+./manage.sh local
 ```
 ## Production Deployment
 To run the project in a hardened production state (detached mode):
 ```shell
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+./manage.sh prod
 ```
