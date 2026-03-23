@@ -61,7 +61,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class LogoutView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
+    authentication_classes = ()
 
     def post(self, request):
         response = Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)

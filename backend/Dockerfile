@@ -35,3 +35,19 @@ RUN chown -R anilist:anilist /app
 USER anilist
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+#######################################################################
+FROM python AS prod
+
+ENV DJANGO_SETTINGS_MODULE=backend.settings.production
+
+COPY --chown=anilist:anilist . .
+RUN chmod +x entrypoint.prod.sh
+
+ENTRYPOINT ["./entrypoint.prod.sh"]
+
+RUN chown -R anilist:anilist /app
+
+USER anilist
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "backend.wsgi:application"]

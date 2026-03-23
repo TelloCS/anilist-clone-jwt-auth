@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const BASE_URL = import.meta.env.DEV ? "http://localhost:8000" : "";
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -70,10 +70,16 @@ api.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError);
 
+        try {
+          await api.post("/api/logout/");
+        } catch (logoutError) {
+          console.warn("Silent logout attempt failed during token refresh");
+        }
+
         const currentPath = window.location.pathname;
-        const isPublicPage = 
-          currentPath === "/" || 
-          currentPath === "/login/" || 
+        const isPublicPage =
+          currentPath === "/" ||
+          currentPath === "/login/" ||
           currentPath === "/register/" ||
           currentPath.startsWith("/anime/");
 

@@ -51,6 +51,7 @@ services:
         condition: service_healthy
     volumes:
         - ./backend:/app/backend/
+        - /app/backend/staticfiles/
     environment:
       - DJANGO_SETTINGS_MODULE=backend.settings.local
     ports:
@@ -65,7 +66,7 @@ services:
       target: dev
     volumes:
       - ./frontend:/app/frontend
-      - /app/frontend/node_modules
+      - frontend_node_modules:/app/frontend/node_modules
     ports:
       - 127.0.0.1:5173:5173
     depends_on:
@@ -76,3 +77,4 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  frontend_node_modules:
